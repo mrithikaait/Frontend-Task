@@ -1,3 +1,4 @@
+
 import {
   Box,
   IconButton,
@@ -6,6 +7,9 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import HomeIcon from "@mui/icons-material/Home";
+import { Link } from "react-router-dom";
+import MuiLink from "@mui/material/Link";
+import { Link as RouterLink } from "react-router-dom";
 
 const Topbar = () => {
   return (
@@ -33,9 +37,19 @@ const Topbar = () => {
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <Avatar />
         <Box>
+         
           <Typography fontSize={14} fontWeight={600}>
-            Admin User
-          </Typography>
+  <MuiLink
+    component={RouterLink}
+    to="/login"
+    underline="none"
+    color="inherit"
+  >
+    Admin User
+  </MuiLink>
+</Typography>
+
+          
           <Typography fontSize={12} color="gray">
             Admin
           </Typography>

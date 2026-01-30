@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   Box,
@@ -6,8 +7,8 @@ import {
   TextField,
   Button,
   Typography,
-  Link,
 } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 
 const ForgotPassword = () => {
   return (
@@ -28,19 +29,14 @@ const ForgotPassword = () => {
             <img
               src="https://images.vexels.com/media/users/3/212847/isolated/preview/341051af4de838b81202c499d4c668b0-only-play-pickleball-paddle-round-badge.png?w=360"
               alt="logo"
-              width="70"
+              width={70}
             />
           </Box>
 
-          {/* Title */}
-          <Typography
-            align="center"
-            sx={{ fontSize: 18, fontWeight: 600, mb: 1 }}
-          >
+          <Typography align="center" sx={{ fontSize: 18, fontWeight: 600 }}>
             Forgot Password
           </Typography>
 
-          {/* Subtitle */}
           <Typography
             align="center"
             sx={{ fontSize: 14, color: "gray", mb: 3 }}
@@ -48,17 +44,11 @@ const ForgotPassword = () => {
             Enter your registered email to receive a reset link
           </Typography>
 
-          {/* Email Label */}
+          {/* Email */}
           <Typography sx={{ mb: 0.5, fontWeight: 500 }}>
             Email <span style={{ color: "red" }}>*</span>
           </Typography>
-
-          {/* Email Input */}
-          <TextField
-            fullWidth
-            placeholder="Enter Your Email"
-            size="small"
-          />
+          <TextField fullWidth placeholder="Enter your Email" size="small" />
 
           {/* Button */}
           <Button
@@ -78,14 +68,20 @@ const ForgotPassword = () => {
             Send Reset Link
           </Button>
 
-          {/* Footer link */}
+          {/* Back to Login */}
           <Typography align="center" sx={{ mt: 3, fontSize: 14 }}>
             Remembered your password?{" "}
-            <Link href="#" underline="none">
+            <RouterLink
+              to="/"
+              style={{
+                textDecoration: "none",
+                color: "#2563eb",
+                fontWeight: 500,
+              }}
+            >
               Sign In
-            </Link>
+            </RouterLink>
           </Typography>
-
         </CardContent>
       </Card>
     </Box>

@@ -1,5 +1,131 @@
-import React from "react";
 
+// import React from "react";
+// import {
+//   Box,
+//   Card,
+//   CardContent,
+//   TextField,
+//   Button,
+//   Typography,
+//   Checkbox,
+//   FormControlLabel,
+//   InputAdornment,
+//   IconButton,
+// } from "@mui/material";
+// import Visibility from "@mui/icons-material/Visibility";
+// import VisibilityOff from "@mui/icons-material/VisibilityOff";
+// import { Link as RouterLink } from "react-router-dom";
+
+// const Login = () => {
+//   const [showPassword, setShowPassword] = React.useState(false);
+
+//   return (
+//     <Box
+//       sx={{
+//         minHeight: "100vh",
+//         backgroundColor: "#f5f7fb",
+//         display: "flex",
+//         alignItems: "center",
+//         justifyContent: "center",
+//       }}
+//     >
+//       <Card sx={{ width: 380, borderRadius: 3, boxShadow: 3 }}>
+//         <CardContent sx={{ p: 4 }}>
+          
+//           {/* Logo */}
+//           <Box sx={{ textAlign: "center", mb: 2 }}>
+//             <img
+//               src="https://images.vexels.com/media/users/3/212847/isolated/preview/341051af4de838b81202c499d4c668b0-only-play-pickleball-paddle-round-badge.png?w=360"
+//               alt="logo"
+//               width={70}
+//             />
+//           </Box>
+
+//           <Typography align="center" sx={{ mb: 3, fontWeight: 600 }}>
+//             Sign in your account
+//           </Typography>
+
+//           {/* Email */}
+//           <Typography sx={{ mb: 0.5, fontWeight: 500 }}>
+//             Email <span style={{ color: "red" }}>*</span>
+//           </Typography>
+//           <TextField fullWidth placeholder="Enter your Email" size="small" />
+
+//           {/* Password */}
+//           <Typography sx={{ mt: 2, mb: 0.5, fontWeight: 500 }}>
+//             Password <span style={{ color: "red" }}>*</span>
+//           </Typography>
+//           <TextField
+//             fullWidth
+//             placeholder="Enter password"
+//             size="small"
+//             type={showPassword ? "text" : "password"}
+//             InputProps={{
+//               endAdornment: (
+//                 <InputAdornment position="end">
+//                   <IconButton onClick={() => setShowPassword(!showPassword)}>
+//                     {showPassword ? <VisibilityOff /> : <Visibility />}
+//                   </IconButton>
+//                 </InputAdornment>
+//               ),
+//             }}
+//           />
+
+//           {/* Remember + Forgot */}
+//           <Box
+//             sx={{
+//               display: "flex",
+//               justifyContent: "space-between",
+//               alignItems: "center",
+//               mt: 1,
+//             }}
+//           >
+//             <FormControlLabel
+//               control={<Checkbox size="small" />}
+//               label="Remember my preference"
+//             />
+
+//             <RouterLink
+//               to="/forget"
+//               style={{
+//                 textDecoration: "none",
+//                 fontSize: 14,
+//                 color: "#2563eb",
+//                 fontWeight: 500,
+//               }}
+//             >
+//               Forgot Password?
+//             </RouterLink>
+//           </Box>
+
+//           {/* Sign In Button */}
+//           <Button
+//             fullWidth
+//             variant="contained"
+//             sx={{
+//               mt: 3,
+//               py: 1.2,
+//               backgroundColor: "#dbe4ff",
+//               color: "#1e40af",
+//               fontWeight: 600,
+//               "&:hover": {
+//                 backgroundColor: "#c7d2fe",
+//               },
+//             }}
+//           >
+//             Sign In
+//           </Button>
+//         </CardContent>
+//       </Card>
+//     </Box>
+//   );
+// };
+
+// export default Login;
+
+
+
+import React, { useState } from "react";
 import {
   Box,
   Card,
@@ -9,15 +135,37 @@ import {
   Typography,
   Checkbox,
   FormControlLabel,
-  Link,
   InputAdornment,
   IconButton,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { loginUser } from "../api/Auth"; 
 
 const Login = () => {
-  const [showPassword, setShowPassword] = React.useState(false);
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleLogin = async () => {
+    setError("");
+
+    try {
+      const res = await loginUser({ email, password });
+
+      // ✅ Save JWT token
+      localStorage.setItem("token", res.data.access_token);
+
+      // ✅ Redirect to dashboard
+      navigate("/dashboard");
+    } catch (err) {
+      setError("Invalid email or password");
+    }
+  };
 
   return (
     <Box
@@ -31,46 +179,42 @@ const Login = () => {
     >
       <Card sx={{ width: 380, borderRadius: 3, boxShadow: 3 }}>
         <CardContent sx={{ p: 4 }}>
-          
-          {/* Logo */}
+          {/* LOGO */}
           <Box sx={{ textAlign: "center", mb: 2 }}>
             <img
               src="https://images.vexels.com/media/users/3/212847/isolated/preview/341051af4de838b81202c499d4c668b0-only-play-pickleball-paddle-round-badge.png?w=360"
-              alt="logo" 
+              alt="logo"
               width={70}
             />
           </Box>
 
-          <Typography
-            align="center"
-            sx={{ mb: 3, fontWeight: 600 }}
-          >
+          <Typography align="center" sx={{ mb: 3, fontWeight: 600 }}>
             Sign in your account
           </Typography>
 
-          {/* Email Label */}
+          {/* EMAIL */}
           <Typography sx={{ mb: 0.5, fontWeight: 500 }}>
             Email <span style={{ color: "red" }}>*</span>
           </Typography>
-
-          {/* Email Input */}
           <TextField
             fullWidth
             placeholder="Enter your Email"
             size="small"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
 
-          {/* Password Label */}
+          {/* PASSWORD */}
           <Typography sx={{ mt: 2, mb: 0.5, fontWeight: 500 }}>
             Password <span style={{ color: "red" }}>*</span>
           </Typography>
-
-          {/* Password Input */}
           <TextField
             fullWidth
             placeholder="Enter password"
             size="small"
             type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -85,7 +229,14 @@ const Login = () => {
             }}
           />
 
-          {/* Remember + Forgot */}
+          {/* ERROR MESSAGE */}
+          {error && (
+            <Typography color="error" fontSize={13} mt={1}>
+              {error}
+            </Typography>
+          )}
+
+          {/* REMEMBER + FORGOT */}
           <Box
             sx={{
               display: "flex",
@@ -99,12 +250,20 @@ const Login = () => {
               label="Remember my preference"
             />
 
-            <Link href="#" underline="none" fontSize={14}>
+            <RouterLink
+              to="/forget"
+              style={{
+                textDecoration: "none",
+                fontSize: 14,
+                color: "#2563eb",
+                fontWeight: 500,
+              }}
+            >
               Forgot Password?
-            </Link>
+            </RouterLink>
           </Box>
 
-          {/* Sign In Button */}
+          {/* SIGN IN BUTTON */}
           <Button
             fullWidth
             variant="contained"
@@ -118,10 +277,10 @@ const Login = () => {
                 backgroundColor: "#c7d2fe",
               },
             }}
+            onClick={handleLogin}
           >
             Sign In
           </Button>
-
         </CardContent>
       </Card>
     </Box>
