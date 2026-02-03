@@ -9,6 +9,7 @@ import { BrowserRouter,Routes,Route } from 'react-router-dom';
 import UserManagement from './pages/UserManagement';
 import Layout from './components/Layout';
 import PrivateRoute from "./routes/PrivateRoute";
+import ResetPassword from './pages/ResetPassword';
 
 
 function App() {
@@ -16,8 +17,10 @@ function App() {
     <div >
       <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-         <Route path="login" element={<Login/>} />
+        <Route path="/" element={<Login />} />
+         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/login" element={<Login />} />
+         <Route path="/dashboard" element={<Dashboard/>} />
 
          
           <Route path="/forget" element={<Forgetpassword/>} />
@@ -25,6 +28,8 @@ function App() {
           <Route path="/booking" element={<Dashboard1/>} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/user" element={<UserManagement />} />
+           
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           <Route element={<Layout />}>
           <Route path="/dashboard" element={<h2>Dashboard</h2>} />

@@ -124,8 +124,7 @@
 // export default Login;
 
 
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Card,
@@ -141,31 +140,33 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { loginUser } from "../api/Auth"; 
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../redux/AuthThunks"; // your redux thunk
 
 const Login = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // Redux state
+  const { loading, error, token } = useSelector((state) => state.auth);
+
+  // Local state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
 
-  const handleLogin = async () => {
-    setError("");
-
-    try {
-      const res = await loginUser({ email, password });
-
-      // ✅ Save JWT token
-      localStorage.setItem("token", res.data.access_token);
-
-      // ✅ Redirect to dashboard
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Invalid email or password");
-    }
+  // Handle login
+  const handleLogin = () => {
+    if (!email || !password) return;
+    dispatch(loginUser({ email, password }));
   };
+
+  // Redirect after successful login
+  useEffect(() => {
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, [token, navigate]);
 
   return (
     <Box
@@ -179,7 +180,7 @@ const Login = () => {
     >
       <Card sx={{ width: 380, borderRadius: 3, boxShadow: 3 }}>
         <CardContent sx={{ p: 4 }}>
-          {/* LOGO */}
+          {/* Logo */}
           <Box sx={{ textAlign: "center", mb: 2 }}>
             <img
               src="https://images.vexels.com/media/users/3/212847/isolated/preview/341051af4de838b81202c499d4c668b0-only-play-pickleball-paddle-round-badge.png?w=360"
@@ -189,10 +190,10 @@ const Login = () => {
           </Box>
 
           <Typography align="center" sx={{ mb: 3, fontWeight: 600 }}>
-            Sign in your account
+            Sign in to your account
           </Typography>
 
-          {/* EMAIL */}
+          {/* Email */}
           <Typography sx={{ mb: 0.5, fontWeight: 500 }}>
             Email <span style={{ color: "red" }}>*</span>
           </Typography>
@@ -204,7 +205,7 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          {/* PASSWORD */}
+          {/* Password */}
           <Typography sx={{ mt: 2, mb: 0.5, fontWeight: 500 }}>
             Password <span style={{ color: "red" }}>*</span>
           </Typography>
@@ -229,14 +230,14 @@ const Login = () => {
             }}
           />
 
-          {/* ERROR MESSAGE */}
+          {/* Error */}
           {error && (
             <Typography color="error" fontSize={13} mt={1}>
               {error}
             </Typography>
           )}
 
-          {/* REMEMBER + FORGOT */}
+          {/* Remember + Forgot */}
           <Box
             sx={{
               display: "flex",
@@ -249,9 +250,8 @@ const Login = () => {
               control={<Checkbox size="small" />}
               label="Remember my preference"
             />
-
             <RouterLink
-              to="/forget"
+              to="/forgot-password"
               style={{
                 textDecoration: "none",
                 fontSize: 14,
@@ -263,23 +263,22 @@ const Login = () => {
             </RouterLink>
           </Box>
 
-          {/* SIGN IN BUTTON */}
+          {/* Login Button */}
           <Button
             fullWidth
             variant="contained"
+            disabled={loading}
             sx={{
               mt: 3,
               py: 1.2,
               backgroundColor: "#dbe4ff",
               color: "#1e40af",
               fontWeight: 600,
-              "&:hover": {
-                backgroundColor: "#c7d2fe",
-              },
+              "&:hover": { backgroundColor: "#c7d2fe" },
             }}
             onClick={handleLogin}
           >
-            Sign In
+            {loading ? "Signing In..." : "Sign In"}
           </Button>
         </CardContent>
       </Card>
